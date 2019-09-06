@@ -40,7 +40,13 @@ contract PurchaseOrderFailureContract over PurchaseOrderFailure state PurchaseOr
   clause execute(request:DocuSignEnvelopeInformation) : PurchaseOrderFailureResponse emits PaymentObligation {
     let deliveryDateOpt = getDateTabFromRecipients(request,"deliveryDate");
     let actualPriceOpt = getNumberTabFromRecipients(request,"actualPrice");
-    let currencyCodeOpt = getTextTabFromRecipients(request,"currencyCode");
+    let currencyCodeOpt =
+      match request.recipients
+		  with let? x then let y : CurrencyCode? =
+			  let tabs : TabStatus[] = getAllTabStatuses(x);
+			  findTabAsText(tabs,"currencyCode");
+		    y
+      else none;
 
     enforce deliveryDateOpt != none
     else throw failure("Could not find a deliveryDate tab");
@@ -52,7 +58,7 @@ contract PurchaseOrderFailureContract over PurchaseOrderFailure state PurchaseOr
 
     enforce currencyCodeOpt != none
     else throw failure("Could not find a currencyCode tab");
-    let currencyCode = currencyCodeOpt ?? "";
+    let currencyCode : CurrencyCode = currencyCodeOpt ?? USD;
 
     // Check that the delivery is late, If not, no penalty should be applied
     enforce isAfter(now(),addDuration(deliveryDate,contract.lateOne))

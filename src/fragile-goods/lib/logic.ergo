@@ -62,8 +62,8 @@ contract FragileGoods over FragileGoodsClause {
 
     match request.finishTime
     with let? finishTime then
-      let deliveryDuration = diffDurationAs(finishTime, request.startTime, "seconds");
-      let limitDuration = durationAs(contract.deliveryLimitDuration, "seconds");
+      let deliveryDuration = diffDurationAs(finishTime, request.startTime, seconds);
+      let limitDuration = durationAs(contract.deliveryLimitDuration, seconds);
       let latePenalty =
         if deliveryDuration.amount > limitDuration.amount
         then contract.lateDeliveryPenalty.doubleValue

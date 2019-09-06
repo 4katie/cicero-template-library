@@ -29,7 +29,7 @@ const moment = require('moment');
 describe('Logic', () => {
 
     const rootDir = path.resolve(__dirname, '..');
-    const clauseText = fs.readFileSync(path.resolve(rootDir, 'sample.txt'), 'utf8');
+    const clauseText = fs.readFileSync(path.resolve(rootDir, 'sample.md'), 'utf8');
     
     let template;
     let clause;
@@ -44,7 +44,7 @@ describe('Logic', () => {
     
     describe('#docusign-po-failure', async function() {
 
-        it('should calculate the penalty when delivered after third late period', async function () {
+        it.only('should calculate the penalty when delivered after third late period', async function () {
             const request = {
                 $class: 'com.docusign.connect.DocuSignEnvelopeInformation',
                 envelopeStatus: {
